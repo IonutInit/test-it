@@ -10,8 +10,15 @@
     "lint": "tsc",
     "format": "prettier --write . "
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IonutInit/test-it"
+  },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Ionut Cojocaru",
+    "url": "i-co.xyz"
+  },
   "license": "MIT",
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
