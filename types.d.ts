@@ -1,12 +1,10 @@
-export type TestType = "equal" | "error" | "be" | "haveProperty";
+export type TestType = "be" | "equal" | "error" | "hasProperty" | "warn";
 
-export type TestOptionsType = {
+type Options = {
   description?: string;
   type?: TestType;
 };
 
-type ExpectedValue = any | [string, any];
-
-export type CaseType = [any[], ExpectedValue, Partial<TestOptionsType>?][];
-
-export type FuncType = Function;
+export type TestIt = {
+  (func: Function, cases: any[], options?: Options): any;
+};

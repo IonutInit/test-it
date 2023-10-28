@@ -1,53 +1,49 @@
-import {
-  TestType,
-  TestOptionsType,
-  CaseType,
-  FuncType,
-  ExpectedValue,
-} from "./types";
+import { TestType } from "./types";
+import { TestIt } from "./types";
 
-type AssertionMethodTypes = {
-  [key in TestType]: (received: any, expected: any) => void;
-};
-
-const testIt = (
-  func: FuncType,
-  cases: CaseType,
-  defaultOptions: TestOptionsType = { description: "", type: "equal" }
+const testIt: TestIt = (
+  func,
+  cases,
+  { description = "", type = "equal" as TestType } = {}
 ) => {
-  const createExpectation = (method: (expectedValue: ExpectedValue) => any) => {
-    return (received: any, expected: any) => {
-      method.call(expect(received), expected);
-    };
-  };
-
-  const assertionMethods: AssertionMethodTypes = {
-    equal: createExpectation(expect.prototype.toEqual),
-    be: createExpectation(expect.prototype.toBe),
-    error: (received, expected) => expect(received).toThrowError(expected),
-    haveProperty: (received, [propertyKey, value]) =>
-      expect(received).toHaveProperty(propertyKey, value),
-  };
-
   describe(func.name, () => {
-    cases.forEach(([input, expected, options = {}]) => {
-      const execType: TestType = options.type || defaultOptions.type!;
-      const description: string =
-        options.description || defaultOptions.description!;
-      const assertMethod = assertionMethods[execType];
+    cases.forEach(
+      ([input, expected, options = { description: false, type: false }]) => {
+        let execType: TestType;
+        !options.type ? (execType = type) : (execType = options.type);
 
-      if (!assertMethod) {
-        throw new Error(`Unsupported test type: ${execType}`);
+        test(!options.description ? description : options.description, () => {
+          switch (execType) {
+            case "be":
+              expect(func(...input)).toBe(expected);
+              break;
+
+            case "error":
+              expect(() => func(...input)).toThrowError(expected);
+              break;
+
+            case "equal":
+              expect(func(...input)).toEqual(expected);
+              break;
+
+            case "hasProperty":
+              expect(func(...input)).toHaveProperty(expected);
+
+            case "warn":
+              const warnSpy = jest
+                .spyOn(console, "warn")
+                .mockImplementation(() => {});
+              func(...input);
+              expect(warnSpy).toHaveBeenCalledWith(expected);
+              warnSpy.mockRestore();
+              break;
+
+            default:
+              break;
+          }
+        });
       }
-
-      test(description, () => {
-        if (execType === "error") {
-          assertMethod(() => func(...input), expected);
-        } else {
-          assertMethod(func(...input), expected);
-        }
-      });
-    });
+    );
   });
 };
 

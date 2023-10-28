@@ -1,6 +1,6 @@
 {
   "name": "@ionutinit/test-it",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Syntactic shortcut to basic jest tests. Made for personal use and for testing npm.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -1,20 +1,14 @@
-type TestType = "equal" | "error" | "be" | "haveProperty";
+type TestType = "be" | "equal" | "error" | "hasProperty" | "warn";
 
-type TestOptionsType = {
+type Options = {
   description?: string;
   type?: TestType;
 };
 
-type ExpectedValue = any | [string, any];
+type TestIt = {
+  (func: Function, cases: any[], options?: Options): any;
+};
 
-type CaseType = [any[], ExpectedValue, Partial<TestOptionsType>?][];
-
-type FuncType = Function;
-
-declare const testIt: (
-  func: FuncType,
-  cases: CaseType,
-  defaultOptions?: TestOptionsType
-) => void;
+declare const testIt: TestIt;
 
 export { testIt as default };

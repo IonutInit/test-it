@@ -1,12 +1,17 @@
-//@ts-nocheck
 import testIt from ".";
-import { CaseType } from "./types";
 
 const add = (a: number, b: number) => a + b;
+
 const greet = (name: string) => `Hello, ${name}!`;
+
 const throwError = () => {
   throw new Error("Error!");
 };
+
+const logWarning = () => {
+  console.warn("Warning");
+};
+
 const getObject = () => ({ name: "John", age: 30 });
 
 testIt(add, [
@@ -20,15 +25,13 @@ testIt(greet, [[["John"], "Hello, John!", { description: "greets John" }]], {
 
 testIt(
   throwError,
-  [
-    [
-      [],
-      "Error!",
-      { description: "throws an error with message Error!", type: "error" },
-    ],
-  ],
+  [[[], "Error!", { description: "throws error", type: "error" }]],
   {}
 );
+
+testIt(logWarning, [
+  [[], "Warning", { description: "logs warning", type: "warn" }],
+]);
 
 testIt(
   getObject,
@@ -39,7 +42,7 @@ testIt(
       ["name", "John"],
       {
         description: "checks if object has property name with value John",
-        type: "haveProperty",
+        type: "hasProperty",
       },
     ],
   ],
